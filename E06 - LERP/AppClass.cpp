@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Justin Armstrong - jxa1762@rit.edu";
 
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUpward(vector3(5.0f,3.0f,15.0f), ZERO_V3, AXIS_Y);
@@ -47,19 +47,77 @@ void Application::Display(void)
 	m_pModel->PlaySequence();
 
 	//Get a timer
-	static float fTimer = 0;	//store the new timer
+	static double dTimer = 0;	//store the new timer
 	static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
-	fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
+	dTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
 
 	//calculate the current position
 	vector3 v3CurrentPos;
 	
+	float fPercentage = static_cast<float>(MapValue(dTimer, 0.0, 1.0, 0.0, 1.0));
 
 
 
 
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+	vector3 v3Start;
+	vector3 v3End;
+	static uint route = 0;
+	v3Start = m_stopsList[route];
+	v3End = m_stopsList[(route + 1) % m_stopsList.size()];
+
+	// use switch statement, successful attempt
+	// 10 stops in total; 0 through 9
+	/*switch (route)
+	{
+	case 0:
+		v3Start = m_stopsList[0];
+		v3End = m_stopsList[1];
+		break;
+	case 1:
+		v3Start = m_stopsList[1];
+		v3End = m_stopsList[2];
+		break;
+	case 2:
+		v3Start = m_stopsList[2];
+		v3End = m_stopsList[3];
+		break;
+	case 3:
+		v3Start = m_stopsList[3];
+		v3End = m_stopsList[4];
+		break;
+	case 4:
+		v3Start = m_stopsList[4];
+		v3End = m_stopsList[5];
+		break;
+	case 5:
+		v3Start = m_stopsList[5];
+		v3End = m_stopsList[6];
+		break;
+	case 6:
+		v3Start = m_stopsList[6];
+		v3End = m_stopsList[7];
+		break;
+	case 7:
+		v3Start = m_stopsList[7];
+		v3End = m_stopsList[8];
+		break;
+	case 8:
+		v3Start = m_stopsList[8];
+		v3End = m_stopsList[9];
+		break;
+	case 9:
+		v3Start = m_stopsList[9];
+		v3End = m_stopsList[10];
+		break;
+	}*/
+	v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+	if (fPercentage >= 1.0f)
+	{
+		route++;
+		dTimer = m_pSystem->GetDeltaTime(uClock);
+		route %= m_stopsList.size();
+	}
 	//-------------------
 	
 
@@ -69,7 +127,7 @@ void Application::Display(void)
 	m_pModel->SetModelMatrix(m4Model);
 
 	m_pMeshMngr->Print("\nTimer: ");//Add a line on top
-	m_pMeshMngr->PrintLine(std::to_string(fTimer), C_YELLOW);
+	m_pMeshMngr->PrintLine(std::to_string(dTimer), C_YELLOW);
 
 	// Draw stops
 	for (uint i = 0; i < m_stopsList.size(); ++i)
