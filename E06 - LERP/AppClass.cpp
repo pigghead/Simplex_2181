@@ -56,9 +56,6 @@ void Application::Display(void)
 	
 	float fPercentage = static_cast<float>(MapValue(dTimer, 0.0, 1.0, 0.0, 1.0));
 
-
-
-
 	//your code goes here
 	vector3 v3Start;
 	vector3 v3End;
